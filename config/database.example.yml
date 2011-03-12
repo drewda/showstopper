@@ -1,0 +1,17 @@
+development: &DEVELOPMENT
+  adapter: mysql2
+  database: showstopper_development
+  encoding: utf8
+  pool: 15
+  username: root
+  password:
+  host: localhost
+
+test: &TEST
+  adapter: mysql2
+  database: showstopper_test
+  encoding: utf8
+  pool: 15
+  username: root
+  password:
+  host: localhost
