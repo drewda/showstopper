@@ -8,6 +8,7 @@ Bundler.require(:default, Rails.env) if defined?(Bundler)
 
 module Showstopper
   class Application < Rails::Application
+    config.action_view.javascript_expansions[:defaults] = ['jquery', 'rails']
     config.time_zone = 'Pacific Time (US & Canada)'
     config.active_record.timestamped_migrations = false
     # Settings in config/environments/* take precedence over those specified here.
