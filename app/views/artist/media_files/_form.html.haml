@@ -1,0 +1,13 @@
+:javascript
+  $(document).ready(function () {
+      $("#media_file_tags").tokenInput("/ajax/media_file_tags.json");
+  });
+
+- semantic_form_for [:artist, @media_file] do |f|
+  = f.inputs do
+    = f.input :name
+    = f.input :kind
+    = f.input :tags, :as => :string
+
+  = f.buttons do
+    = f.commit_button

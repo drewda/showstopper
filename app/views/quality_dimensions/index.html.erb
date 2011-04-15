@@ -1,0 +1,27 @@
+<h1>Listing quality_dimensions</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Min</th>
+    <th>Max</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @quality_dimensions.each do |quality_dimension| %>
+  <tr>
+    <td><%= quality_dimension.name %></td>
+    <td><%= quality_dimension.min %></td>
+    <td><%= quality_dimension.max %></td>
+    <td><%= link_to 'Show', quality_dimension %></td>
+    <td><%= link_to 'Edit', edit_quality_dimension_path(quality_dimension) %></td>
+    <td><%= link_to 'Destroy', quality_dimension, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Quality dimension', new_quality_dimension_path %>

@@ -1,0 +1,29 @@
+<%= form_for(@quality_measure) do |f| %>
+  <% if @quality_measure.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@quality_measure.errors.count, "error") %> prohibited this quality_measure from being saved:</h2>
+
+      <ul>
+      <% @quality_measure.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :media_file_id %><br />
+    <%= f.text_field :media_file_id %>
+  </div>
+  <div class="field">
+    <%= f.label :quality_dimension_id %><br />
+    <%= f.text_field :quality_dimension_id %>
+  </div>
+  <div class="field">
+    <%= f.label :value %><br />
+    <%= f.text_field :value %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

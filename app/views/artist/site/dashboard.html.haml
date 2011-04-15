@@ -1,0 +1,73 @@
+!!!
+%head
+  %title ShowStopper
+  = javascript_include_tag "jquery", "underscore", "json2", "backbone", "backbone.rails", "jquery.isotope"
+  :javascript
+    var tag_list = [];
+    
+    $(function() {
+      window.MediaFile = Backbone.Model.extend({
+        name: 'media_file'
+      });
+      window.MediaFiles = Backbone.Collection.extend({
+        model: MediaFile,
+        url: '/api/media_files',
+        initialize: function() {
+          this.bind('refresh', this.updateTagList);
+        },
+        updateTagList: function() {
+          tag_list = _.uniq(_.flatten(this.pluck('tag_list')));
+        }
+      });
+      window.mediaFiles = new MediaFiles;
+      
+      window.TagItemView = Backbone.View.extend({
+        tagName: 'li',
+        template: _.template('tag: <%= tag %>'),
+        render: function() {
+          $(this.el).html(this.template(this.model.toJSON()));
+          return this;
+        }
+      });
+      window.TagListView = Backbone.View.extend({
+        initialize: function() {
+          mediaFiles.bind('change', this.render);
+        },
+        render: function() {
+          _.each(tag_list, function(tag) {
+            view = new MediaFile({tag: tag})
+            $('#tag-list').append(view.render().el);
+          })
+        }
+      });
+      window.tagListView = new TagListView;
+      
+      window.MediaFileItemView = Backbone.View.extend({
+        tagName: 'li',
+        template: _.template('kind: <%= media_file.kind %>'),
+        render: function() {
+          $(this.el).html(this.template(this.model.toJSON()));
+          return this;
+        }
+      });
+      window.MediaFileListView = Backbone.View.extend({
+        initialize: function() {
+          mediaFiles.bind('change', this.render);
+        },
+        render: function() {
+          alert('a');
+          $('#media-file-list').empty();
+          mediaFiles.each(function(mediaFile) {
+            view = new MediaFileItemView({model: mediaFile});
+            $('#media-file-list').append(view.render().el);
+          })
+        }
+      });
+      window.mediaFileListView = new MediaFileListView;
+      
+      mediaFiles.fetch();
+    });
+    
+%body
+  #tag-list
+  #media-file-list
