@@ -7,7 +7,7 @@ class Api::MediaFilesController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @media_files }
-      format.json  { render :json => @media_files, :methods => [:tag_list] }
+      format.json  { render :json => @media_files, :methods => [:tag_list, :image_url] }
     end
   end
 

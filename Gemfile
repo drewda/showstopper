@@ -14,10 +14,16 @@ gem "paperclip"
 gem "haml"
 gem "compass"
 
+gem "rmagick"
+
+gem "juggernaut"
+
 gem "rails_admin", :git => "git://github.com/sferik/rails_admin.git"
 
 gem "acts-as-taggable-on"
 gem 'rails_admin_tag_list_field', :git => 'https://github.com/kryzhovnik/rails_admin_tag_list_field.git'
+
+gem 'newrelic_rpm'
 
 group :development, :test do
   gem "rspec-rails"

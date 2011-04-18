@@ -1,7 +1,8 @@
 !!!
 %head
   %title ShowStopper
-  = javascript_include_tag "jquery", "underscore", "json2", "backbone", "backbone.rails", "jquery.isotope"
+  = javascript_include_tag "jquery", "underscore", "json2", "backbone", "backbone.rails", "jquery.isotope", "supersized.3.1.3"
+  = stylesheet_link_tag "supersized"
   :javascript
     var tag_list = [];
     
@@ -35,7 +36,7 @@
         },
         render: function() {
           _.each(tag_list, function(tag) {
-            view = new MediaFile({tag: tag})
+            view = new TagItemView({tag: tag})
             $('#tag-list').append(view.render().el);
           })
         }
@@ -65,9 +66,35 @@
       });
       window.mediaFileListView = new MediaFileListView;
       
+      window.Supersized = Backbone.View.extend({
+        initialize: function() {
+          mediaFiles.bind('refresh', this.render)
+        },
+        render: function() {
+          var slide_array = [];
+          mediaFiles.each(function(mediaFile) {
+            slide_array.push({image: 'http://showstopper.hereintheforest.com' + mediaFile.get('image_url'), title: mediaFile.get('name'), url: null});
+          });
+          
+          $.supersized({
+            slideshow: 1,
+            autoplay: 1,
+            start_slide: 1,
+            slide_interval: 3000,
+            transition: 1,
+            transition_speed: 500,
+            performance: 2,
+            slides: slide_array
+          });
+        }
+      });
+      window.supersized = new Supersized;
+      
       mediaFiles.fetch();
+      
     });
     
 %body
   #tag-list
   #media-file-list
+  #content
