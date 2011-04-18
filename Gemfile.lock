@@ -17,6 +17,7 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
+    SystemTimer (1.2.3)
     abstract (1.0.0)
     actionmailer (3.0.6)
       actionpack (= 3.0.6)
@@ -72,6 +73,7 @@ GEM
       i18n (~> 0.4)
     haml (3.0.25)
     i18n (0.5.0)
+    json (1.5.1)
     juggernaut (2.0.1)
       redis
     mail (2.2.15)
@@ -184,6 +186,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  SystemTimer
   acts-as-taggable-on
   compass
   declarative_authorization
@@ -191,6 +194,7 @@ DEPENDENCIES
   devise_invitable
   formtastic
   haml
+  json
   juggernaut
   mysql2
   newrelic_rpm

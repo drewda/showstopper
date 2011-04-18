@@ -1,0 +1,4 @@
+%h1 Which display is this?
+%ul
+  - @displays.each do |display|
+    %li= link_to display.name, "/gallery/display/#{display.id}"

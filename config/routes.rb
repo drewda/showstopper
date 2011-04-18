@@ -7,8 +7,14 @@ Showstopper::Application.routes.draw do
     resources :media_files
   end
   
+  namespace :gallery do
+    match '/' => 'display#setup'
+    match '/display/(:display_id)' => 'display#display'
+  end
+  
   namespace :api do
     resources :media_files
+    resources :displays
   end
   
   devise_for :users
