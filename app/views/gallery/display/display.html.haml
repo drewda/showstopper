@@ -1,0 +1,67 @@
+!!!
+%head
+  %title ShowStopper
+  = javascript_include_tag "jquery", "underscore", "json2", "backbone", "backbone.rails", "jquery.waitforimages"
+  :javascript
+    var tag_list = [];
+    
+    $(function() {
+      window.MediaFile = Backbone.Model.extend({
+        name: 'media_file'
+      });
+      window.MediaFiles = Backbone.Collection.extend({
+        model: MediaFile,
+        url: '/api/media_files',
+        initialize: function() {
+          this.bind('refresh', this.updateTagList);
+        },
+        updateTagList: function() {
+          tag_list = _.uniq(_.flatten(this.pluck('tag_list')));
+        }
+      });
+      window.mediaFiles = new MediaFiles;
+      
+      window.BackgroundImage = Backbone.View.extend({
+        initialize: function() {
+          mediaFiles.bind('refresh', this.render)
+        },
+        render: function() {
+          var image_url = mediaFiles.first().get('image_url');
+          $('#images #current').append('<img id="image" src="' + image_url + '" style="display: none;"/>');
+          // code from: http://stackoverflow.com/questions/1311068/scale-a-div-to-fit-in-window-but-preserve-aspect-ratio/5215164#5215164
+          var height = $('#image').height();
+          var width = $('#image').width();
+          aspect = width / height;
+          if($(window).height() > $(window).width()) {
+            var resizedHeight = $(window).height();
+            var resizedWidth = resizedHeight * aspect;
+          }
+          else { // screen width is smaller than height (mobile, etc)
+            var resizedWidth = $(window).width();
+            var resizedHeight = resizedWidth / aspect;      
+          }
+          $('#image').height(resizedHeight);
+          $('#image').width(resizedWidth);
+          
+          $('#images #current').waitForImages(function() {
+            $('#images #current img').fadeIn();
+          });
+        }
+      });
+      
+      window.backgroundImage = new BackgroundImage;
+      
+      mediaFiles.fetch();
+      
+    });
+   
+  :css
+    body {
+      background-color: #000;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+%body
+  #images
+    #current

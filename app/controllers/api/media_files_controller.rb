@@ -2,7 +2,7 @@ class Api::MediaFilesController < ApplicationController
   # GET /media_files
   # GET /media_files.xml
   def index
-    @media_files = MediaFile.all
+    @media_files = MediaFile.all.shuffle.take(5)
 
     respond_to do |format|
       format.html # index.html.erb

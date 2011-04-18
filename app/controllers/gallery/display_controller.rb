@@ -1,4 +1,4 @@
-class DisplayController < ApplicationController
+class Gallery::DisplayController < ApplicationController
   def setup
     @displays = Display.all
   end

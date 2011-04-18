@@ -17,7 +17,7 @@ gem "compass"
 gem "rmagick"
 
 gem "juggernaut"
-gem "SystemTimer"
+#gem "SystemTimer"
 gem "json"
 
 gem "rails_admin", :git => "git://github.com/sferik/rails_admin.git"
