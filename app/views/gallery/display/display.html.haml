@@ -17,6 +17,9 @@
         },
         updateTagList: function() {
           tag_list = _.uniq(_.flatten(this.pluck('tag_list')));
+        },
+        selectedImages: function() {
+          var images = mediaFiles.filter()
         }
       });
       window.mediaFiles = new MediaFiles;
@@ -27,10 +30,10 @@
         },
         render: function() {
           var image_url = mediaFiles.first().get('image_url');
-          $('#images #current').append('<img id="image" src="' + image_url + '" style="display: none;"/>');
+          $('#images').append('<img id="image" class="current" src="' + image_url + '" style="display: none;"/>');
           // code from: http://stackoverflow.com/questions/1311068/scale-a-div-to-fit-in-window-but-preserve-aspect-ratio/5215164#5215164
-          var height = $('#image').height();
-          var width = $('#image').width();
+          var height = $('#images #image').height();
+          var width = $('#images #image').width();
           aspect = width / height;
           if($(window).height() > $(window).width()) {
             var resizedHeight = $(window).height();
@@ -40,12 +43,15 @@
             var resizedWidth = $(window).width();
             var resizedHeight = resizedWidth / aspect;      
           }
-          $('#image').height(resizedHeight);
-          $('#image').width(resizedWidth);
+          $('#images #image').height(resizedHeight);
+          $('#images #image').width(resizedWidth);
           
-          $('#images #current').waitForImages(function() {
-            $('#images #current img').fadeIn();
+          $('#images').waitForImages(function() {
+            $('#images #image').fadeIn();
           });
+        },
+        nextImage: function() {
+          
         }
       });
       
