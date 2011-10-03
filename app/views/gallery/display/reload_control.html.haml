@@ -1,0 +1,19 @@
+= javascript_include_tag "jquery", "underscore"
+<link rel="stylesheet"  href="http://code.jquery.com/mobile/1.0a4.1/jquery.mobile-1.0a4.1.min.css" /> 
+<script type="text/javascript" src="http://code.jquery.com/mobile/1.0a4.1/jquery.mobile-1.0a4.1.min.js"></script>  
+    
+#reload(data-role="page")
+  %div(data-role="header" data-backbtn="false")
+    %h1 Reload
+  %div(data-role="content")
+    %div(data-role="fieldcontain")
+      - @displays.each do |display|
+        %button{:id => "display-#{display.id}", :value => display.name}
+        :javascript
+          $('#display-#{display.id}').click(function() {
+            $.ajax({
+              url: "/gallery/push_to_displays?command=reload&display=#{display.name}"
+            });
+          });
+  %div(data-role="footer")
+    <a href="/gallery/image_control">Image Tags</a> | <a href="/gallery/sound_control">Sounds</a> | <a href="/gallery/reload_control">Reload</a>

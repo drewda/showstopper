@@ -1,0 +1,24 @@
+= javascript_include_tag "jquery", "underscore"
+<link rel="stylesheet"  href="http://code.jquery.com/mobile/1.0a4.1/jquery.mobile-1.0a4.1.min.css" /> 
+<script type="text/javascript" src="http://code.jquery.com/mobile/1.0a4.1/jquery.mobile-1.0a4.1.min.js"></script>
+
+#sounds(data-role="page")
+  %div(data-role="header" data-backbtn="false")
+    %h1 Sounds
+  %div(data-role="content")
+    %div(data-role="fieldcontain")
+      %label(for="displays") Display
+      %select#displays
+        - @displays.each do |display|
+          %option= display.name
+        
+      - @sounds.each do |sound|
+        %button{:id => "sound-#{sound.id}", :value => sound.name}
+        :javascript
+          $('#sound-#{sound.id}').click(function() {
+            $.ajax({
+              url: "/gallery/push_to_displays?command=audio&id=#{sound.id}&display=" + $('#displays').val()
+            });
+          });
+  %div(data-role="footer")
+    <a href="/gallery/image_control">Image Tags</a> | <a href="/gallery/sound_control">Sounds</a> | <a href="/gallery/reload_control">Reload</a>

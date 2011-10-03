@@ -8,4 +8,8 @@ class MediaFile < ActiveRecord::Base
   def image_url
     self.image.url
   end
+  
+  def audio_url
+    self.audio.url
+  end
 end

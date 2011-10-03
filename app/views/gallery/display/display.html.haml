@@ -2,12 +2,45 @@
 %head
   %title ShowStopper
   = javascript_include_tag "jquery", "underscore", "json2", "backbone", "backbone.rails", "jquery.waitforimages"
+  = javascript_include_tag "soundmanager/script/soundmanager2.js"
+  
+  <script src="http://fishy.dara-abrams.com:8080/application.js" type="text/javascript" charset="utf-8"></script>
   :javascript
+    var imageTimerRate = 10000; //ms
+    var imageTimer;
     var tag_list = [];
     
+    /** JUG **/
+    var jug = new Juggernaut;
+    jug.subscribe(document.URL.split('/').pop(), function(data) {
+      var command = data.split('|')[0];
+      var attribute1 = data.split('|')[1];
+      if (command == 'tag') {
+        mediaFiles.selectByTag(attribute1);
+      } else if (command == 'image-rate') {
+       imageTimerRate = attribute1; 
+       clearTimeout(imageTimer);
+       imageTimer = setTimeout(function() {
+         backgroundImage.nextImage();
+       }, imageTimerRate);
+      } else if (command == 'reload') {
+        window.location.assign(document.URL);
+      } else if (command == 'test') {
+        console.log(attribute1);
+      } else if (command == 'audio') {
+        soundManager.stopAll();
+        soundManager.play('audio-' + Math.random(), attribute1);
+      }
+    });
+    
+    /** SOUND **/
+    soundManager.url = '/javascripts/soundmanager/swf/';
+    soundManager.debugMode = false;
+    
+    /** BACKBONE **/
     $(function() {
       window.MediaFile = Backbone.Model.extend({
-        name: 'media_file'
+        name: 'media_file',
       });
       window.MediaFiles = Backbone.Collection.extend({
         model: MediaFile,
@@ -19,39 +52,75 @@
           tag_list = _.uniq(_.flatten(this.pluck('tag_list')));
         },
         selectedImages: function() {
-          var images = mediaFiles.filter()
+          var images = mediaFiles.filter(function(mf) {
+            return (mf.get('selected') && (mf.get('kind') == 'image'));
+          });
+          return images;
+        },
+        selectByTag: function(tag) {
+          mediaFiles.each(function(mf) {
+            if (_.include(mf.get('tag_list'), tag)) {
+              mf.set({ selected: true });
+            }
+            else {
+              mf.set({ selected: false });
+            }
+          });
+          backgroundImage.render();
+        },
+        allAudio: function() {
+          return mediaFiles.filter(function(mf) {
+            return (mf.get('kind') == 'image');
+          });
         }
       });
       window.mediaFiles = new MediaFiles;
       
       window.BackgroundImage = Backbone.View.extend({
         initialize: function() {
-          mediaFiles.bind('refresh', this.render)
+          // mediaFiles.bind('refresh', this.render)
         },
         render: function() {
-          var image_url = mediaFiles.first().get('image_url');
-          $('#images').append('<img id="image" class="current" src="' + image_url + '" style="display: none;"/>');
-          // code from: http://stackoverflow.com/questions/1311068/scale-a-div-to-fit-in-window-but-preserve-aspect-ratio/5215164#5215164
-          var height = $('#images #image').height();
-          var width = $('#images #image').width();
-          aspect = width / height;
-          if($(window).height() > $(window).width()) {
-            var resizedHeight = $(window).height();
-            var resizedWidth = resizedHeight * aspect;
-          }
-          else { // screen width is smaller than height (mobile, etc)
-            var resizedWidth = $(window).width();
-            var resizedHeight = resizedWidth / aspect;      
-          }
-          $('#images #image').height(resizedHeight);
-          $('#images #image').width(resizedWidth);
+          $('#images').empty();
           
-          $('#images').waitForImages(function() {
-            $('#images #image').fadeIn();
+          _.each(_.first(mediaFiles.selectedImages(), 5), function(mf) {
+             var image_url = mf.get('image_url');
+             $('#images').append('<img src="' + image_url + '" style="display: none;"/>');
+             
+             // code from: http://stackoverflow.com/questions/1311068/scale-a-div-to-fit-in-window-but-preserve-aspect-ratio/5215164#5215164
+             var height = $('#images img').last().height();
+             var width = $('#images img').last().width();
+             aspect = width / height;
+             if($(window).height() > $(window).width()) {
+               var resizedHeight = $(window).height();
+               var resizedWidth = resizedHeight * aspect;
+             }
+             else { // screen width is smaller than height (mobile, etc)
+               var resizedWidth = $(window).width();
+               var resizedHeight = resizedWidth / aspect;      
+             }
+             $('#images img').last().height(resizedHeight);
+             $('#images img').last().width(resizedWidth);
+          });
+          
+          $('#images img').first().waitForImages(function() {
+            $('#images img').first().fadeIn();
+            imageTimer = setTimeout(function() {
+              backgroundImage.nextImage();
+            }, imageTimerRate);
           });
         },
         nextImage: function() {
-          
+          $('img:visible').fadeOut();
+          nextImage = $('img:visible').first().next();
+          if (nextImage.length == 0) {
+            nextImage = $('#images img').first();
+          }
+          $(nextImage).fadeIn();
+          clearTimeout(imageTimer);
+          imageTimer = setTimeout(function() {
+            backgroundImage.nextImage();
+          }, imageTimerRate);
         }
       });
       
@@ -70,4 +139,3 @@
     }
 %body
   #images
-    #current
